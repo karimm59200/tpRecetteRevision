@@ -14,7 +14,7 @@ public class RecetteDAO  extends BaseDAO<Recette> {
 
     private int nbRows;
 
-    protected RecetteDAO(Connection connection) {
+    public RecetteDAO(Connection connection) {
         super(connection);
     }
 
