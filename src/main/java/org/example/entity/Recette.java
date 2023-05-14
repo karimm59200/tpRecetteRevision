@@ -1,8 +1,10 @@
 package org.example.entity;
 
+import java.util.List;
+
 public class Recette {
 
-    private int idRecette;
+    private int id;
 
     private String nom;
 
@@ -12,8 +14,8 @@ public class Recette {
 
     private  String instruction;
 
-    public Recette(int idRecette, String nom, String categorie, String duree, String instruction) {
-        this.idRecette = idRecette;
+    public Recette(int id, String nom, String categorie, String duree, String instruction) {
+        this.id = id;
         this.nom = nom;
         this.categorie = categorie;
         this.duree = duree;
@@ -27,12 +29,12 @@ public class Recette {
         this.instruction = instruction;
     }
 
-    public int getIdRecette() {
-        return idRecette;
+    public int getId() {
+        return id;
     }
 
-    public void setIdRecette(int idRecette) {
-        this.idRecette = idRecette;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNom() {
@@ -70,7 +72,7 @@ public class Recette {
     @Override
     public String toString() {
         return "Recette{" +
-                "idRecette=" + idRecette +
+                "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", categorie='" + categorie + '\'' +
                 ", duree='" + duree + '\'' +

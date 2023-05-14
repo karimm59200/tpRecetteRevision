@@ -26,6 +26,6 @@ public abstract class BaseDAO<T> {
 
     public abstract boolean delete(T element) throws SQLException, ExecutionControl.NotImplementedException;
     public abstract List<T> get() throws  SQLException;
-
+    public abstract List<T> getByName(String s) throws  SQLException;
     public abstract T get(int id) throws SQLException;
 }

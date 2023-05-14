@@ -2,6 +2,7 @@ package org.example.dao;
 
 import jdk.jshell.spi.ExecutionControl;
 import org.example.entity.Commentaire;
+import org.example.entity.Recette;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,24 +13,22 @@ import java.util.List;
 public class CommentaireDAO extends BaseDAO<Commentaire> {
     private int nbRows;
 
-    protected CommentaireDAO(Connection connection) {
+    public CommentaireDAO(Connection connection) {
         super(connection);
     }
 
     @Override
     public boolean save(Commentaire element) throws SQLException {
-        request = "INSERT INTO commentaire (idCommentaire, idRecette, commentaire) VALUES (?, ?, ?)";
-        try {
-            statement = _connection.prepareStatement(request);
-            statement.setInt(1, element.getIdCommentaire());
-            statement.setInt(2, element.getIdRecette());
-            statement.setString(3, element.getCommentaire());
-            statement.execute();
-            return nbRows  == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        request = "INSERT INTO commentaire (id, commentaire, recette_id) VALUES (?, ?, ?)";
+
+            statement = _connection.prepareStatement(request, statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, element.getId());
+        statement.setString(2, element.getCommentaire());
+            statement.setInt(3, element.getRecette_id());
+            int nbRow = statement.executeUpdate();
+            resultSet = statement.getGeneratedKeys();
+            return nbRow == 1;
+
     }
 
     @Override
@@ -42,7 +41,7 @@ public class CommentaireDAO extends BaseDAO<Commentaire> {
         request = "DELETE FROM commentaire WHERE idCommentaire = ?";
         try {
             statement = _connection.prepareStatement(request);
-            statement.setInt(1, element.getIdCommentaire());
+            statement.setInt(1, element.getId());
             statement.execute();
             return nbRows == 1;
         } catch (SQLException e) {
@@ -74,8 +73,34 @@ public class CommentaireDAO extends BaseDAO<Commentaire> {
     }
 
     @Override
-    public Commentaire get(int id) throws SQLException {
-
+    public List<Commentaire> getByName(String s) throws SQLException {
         return null;
     }
+
+    @Override
+    public Commentaire get(int id) throws SQLException {
+        return null;
+    }
+
+
+    public List<Commentaire> getCommentByRecetteID(int recetteId) throws SQLException {
+        List<Commentaire> result = new ArrayList<>();
+        request = "SELECT * FROM recettes.commentaire where recette_id = ?";
+
+            statement = _connection.prepareStatement(request);
+            statement.setInt(1, recetteId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result.add(new Commentaire(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("recette_id"),
+                        resultSet.getString("commentaire")
+
+                ));
+            }
+        return result;
+    }
+
+
+
 }

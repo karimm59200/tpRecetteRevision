@@ -1,54 +1,51 @@
 package org.example.dao;
 
 import jdk.jshell.spi.ExecutionControl;
-import org.example.entity.Commentaire;
-import org.example.entity.Ingredients;
+import org.example.entity.Ingredient;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class IngredientDAO  extends BaseDAO<Ingredients>{
+public class IngredientDAO  extends BaseDAO<Ingredient>{
     private int nbRows;
 
-    protected IngredientDAO(Connection connection) {
+    public IngredientDAO(Connection connection) {
         super(connection);
     }
 
     @Override
-    public boolean save(Ingredients element) throws SQLException {
-        request = "INSERT INTO ingredients (nom,) VALUES (?)";
-        try {
-            statement = _connection.prepareStatement(request);
-            statement.setString(1, element.getNom());
-            statement.execute();
-            return nbRows  == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public boolean save(Ingredient element) throws SQLException {
+        request = "INSERT INTO ingredient (nom) VALUES (?)";
+        statement = _connection.prepareStatement(request, statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, element.getNom());
+        int nbRow = statement.executeUpdate();
+        resultSet = statement.getGeneratedKeys();
 
+        return nbRow == 1;
     }
 
+
+
     @Override
-    public boolean update(Ingredients element) throws SQLException, ExecutionControl.NotImplementedException {
+    public boolean update(Ingredient element) throws SQLException, ExecutionControl.NotImplementedException {
         return false;
     }
 
     @Override
-    public boolean delete(Ingredients element) throws SQLException, ExecutionControl.NotImplementedException {
+    public boolean delete(Ingredient element) throws SQLException, ExecutionControl.NotImplementedException {
         return false;
     }
 
     @Override
-    public List<Ingredients> get() throws SQLException {
-        List<Ingredients> ingredients = new ArrayList<>();
-        request = "SELECT * FROM ingredients";
+    public List<Ingredient> get() throws SQLException {
+        List<Ingredient> ingredients = new ArrayList<>();
+        request = "SELECT * FROM ingredient";
         try{
             statement = _connection.prepareStatement(request);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                ingredients.add(new Ingredients(
+                ingredients.add(new Ingredient(
                         resultSet.getInt("id"),
                         resultSet.getString("nom")
                 ));
@@ -61,8 +58,31 @@ public class IngredientDAO  extends BaseDAO<Ingredients>{
     }
 
     @Override
-    public Ingredients get(int id) throws SQLException {
-
+    public List<Ingredient> getByName(String s) throws SQLException {
         return null;
+    }
+
+    @Override
+    public Ingredient get(int id) throws SQLException {
+        return null;
+    }
+
+
+    public List<Ingredient> getIngedientsByRecetteID(int recetteID) throws SQLException {
+        List<Ingredient> ingredients = new ArrayList<>();
+        request = "select i.id, i.nom from ingredient as i LEFT OUTER JOIN recette_ingredient as ri on i.id = ri.ingredient_id where ri.recette_id = ?;";
+            statement = _connection.prepareStatement(request);
+        statement = _connection.prepareStatement(request);
+        statement.setString(1, String.valueOf(recetteID));
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                ingredients.add(new Ingredient(
+                        resultSet.getInt("id"),
+                        resultSet.getString("nom")
+                ));
+            }
+
+
+        return ingredients;
     }
 }

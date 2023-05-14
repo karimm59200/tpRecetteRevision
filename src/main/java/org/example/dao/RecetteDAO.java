@@ -4,8 +4,10 @@ import jdk.jshell.spi.ExecutionControl;
 import org.example.entity.Commentaire;
 import org.example.entity.Recette;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,25 +16,24 @@ public class RecetteDAO  extends BaseDAO<Recette> {
 
     private int nbRows;
 
+
+
     public RecetteDAO(Connection connection) {
         super(connection);
     }
 
     @Override
     public boolean save(Recette element) throws SQLException {
-        request = "INSERT INTO recette (nom, categorie, duree, instruction) VALUES (?, ?, ?, ?)";
-        try {
-            statement = _connection.prepareStatement(request);
+        request = "INSERT INTO recette (nom,  categorie, duree, instruction) VALUES (?, ?,?, ? )";
+            statement = _connection.prepareStatement(request, statement.RETURN_GENERATED_KEYS);
             statement.setString(1, element.getNom());
             statement.setString(2, element.getCategorie());
             statement.setString(3, element.getDuree());
             statement.setString(4, element.getInstruction());
-            statement.execute();
-            return nbRows == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+            int nbRow = statement.executeUpdate();
+            resultSet = statement.getGeneratedKeys();
+
+            return nbRow == 1;
 
     }
 
@@ -48,11 +49,16 @@ public class RecetteDAO  extends BaseDAO<Recette> {
 
     @Override
     public List<Recette> get() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<Recette> getByName(String nomRecette) throws SQLException {
         List<Recette> recettes = new ArrayList<>();
-        request = "SELECT * FROM recettes";
-        try {
-            statement = _connection.prepareStatement(request);
-            resultSet = statement.executeQuery();
+        request = "SELECT * FROM recette where nom like ?";
+        statement = _connection.prepareStatement(request);
+        statement.setString(1, "%"+nomRecette+"%");
+        resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 recettes.add(new Recette(
                         resultSet.getInt("id"),
@@ -63,17 +69,13 @@ public class RecetteDAO  extends BaseDAO<Recette> {
                 ));
             }
             return recettes;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 
 
     @Override
     public Recette get(int id) throws SQLException {
-        request = "SELECT * FROM recettes WHERE id = ?";
+        request = "SELECT * FROM recette WHERE id = ?";
         try {
             statement = _connection.prepareStatement(request);
             statement.setInt(1, id);

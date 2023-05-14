@@ -9,10 +9,10 @@ public class DataBaseSingleton {
         private static DataBaseSingleton instance;
         private Connection connection;
         private String url = "jdbc:mysql://localhost:3306/recettes";
-        private String username = "test";
-        private String password = "password";
+        private String username = "root";
+        private String password = "test";
 
-        private DataBaseSingleton() throws SQLException {
+        public DataBaseSingleton() throws SQLException {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 this.connection = DriverManager.getConnection(url, username, password);

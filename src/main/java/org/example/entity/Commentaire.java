@@ -2,38 +2,37 @@ package org.example.entity;
 
 public class Commentaire {
 
-    private int idCommentaire;
+    private int id;
 
-    private int idRecette;
+    private int recette_id;
 
     private String commentaire;
 
-    public Commentaire(int idCommentaire, int idRecette) {
-        this.idCommentaire = idCommentaire;
-        this.idRecette = idRecette;
+    public Commentaire(int id, int recette_id, String commentaire) {
+        this.id = id;
+        this.recette_id = recette_id;
+        this.commentaire = commentaire;
     }
 
-    public Commentaire(int idRecette) {
-        this.idRecette = idRecette;
+    public Commentaire(int recette_id, String commentaire) {
+        this.recette_id = recette_id;
+        this.commentaire = commentaire;
     }
 
-    public Commentaire(int idCommentaire, int idRecette, String commentaire) {
+    public int getId() {
+        return id;
     }
 
-    public int getIdCommentaire() {
-        return idCommentaire;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setIdCommentaire(int idCommentaire) {
-        this.idCommentaire = idCommentaire;
+    public int getRecette_id() {
+        return recette_id;
     }
 
-    public int getIdRecette() {
-        return idRecette;
-    }
-
-    public void setIdRecette(int idRecette) {
-        this.idRecette = idRecette;
+    public void setRecette_id(int recette_id) {
+        this.recette_id = recette_id;
     }
 
     public String getCommentaire() {
@@ -47,8 +46,9 @@ public class Commentaire {
     @Override
     public String toString() {
         return "Commentaire{" +
-                "idCommentaire=" + idCommentaire +
-                ", idRecette=" + idRecette +
+                "id=" + id +
+                ", recette_id=" + recette_id +
+                ", commentaire='" + commentaire + '\'' +
                 '}';
     }
 }
